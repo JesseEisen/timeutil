@@ -12,5 +12,8 @@ char*   ymd(void);
 char*   hms(void);
 char*   timestampstr(void);
 int64_t timestamp(void);
+int64_t timestampwall(void);
+int64_t timestampcpu(void);
+
 
 #endif

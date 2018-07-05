@@ -12,5 +12,10 @@ main (void)
   printf ("\tstring stamp: %22s\n", timestampstr ());
   printf ("\n");
 
+
+  printf ("\ttimeofcpu: %24lld\n", timestampcpu ());
+  printf ("\ttimestamp: %23lld\n", timestamp ());
+  sleep (2);
+  printf ("\ttimeofwall: %24lld\n", timestampwall ());
   return 0;
 }
