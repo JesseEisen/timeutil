@@ -8,7 +8,9 @@
 #include <time.h>
 #include <unistd.h>
 
-char *ymd(void);
+char*   ymd(void);
+char*   hms(void);
+char*   timestampstr(void);
 int64_t timestamp(void);
 
 #endif

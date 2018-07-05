@@ -3,11 +3,14 @@
 int
 main(void)
 {
-
-    printf("Today:%15s\n", ymd());
-    printf("right Now: %lld\n", timestamp());
+	printf("\n");
+    printf("\tYMD: %26s\n", ymd());
+	printf("\tHMS: %24s\n", hms());
+    printf("\ttimestamp: %23lld\n", timestamp());
     sleep(2);
-    printf("2s  later: %lld\n", timestamp());
+    printf("\ttimstamp(2s later): %14lld\n", timestamp());
+	printf("\tstring stamp: %22s\n", timestampstr());
+	printf("\n");
 
     return 0;
 }
