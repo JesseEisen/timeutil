@@ -8,12 +8,12 @@
 #include <time.h>
 #include <unistd.h>
 
-char*   ymd(void);
-char*   hms(void);
-char*   timestampstr(void);
-int64_t timestamp(void);
-int64_t timestampwall(void);
-int64_t timestampcpu(void);
+extern char*   ymd(void);
+extern char*   hms(void);
+extern char*   timestampstr(void);
+extern int64_t timestamp(void);
+extern int64_t timestampwall(void);
+extern int64_t timestampcpu(void);
 
 
 #endif

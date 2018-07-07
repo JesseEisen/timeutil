@@ -1,10 +1,24 @@
 ## timeutil
 
-some functions  which are used to generate regular time format, or other stuff...
+Some functions  which are used to generate regular time format, or other stuff. For now, you can use those api to get time.
+
+```c
+char*   ymd(void);
+char*   hms(void);
+char*   timestampstr(void);
+int64_t timestamp(void);
+int64_t timestampwall(void);
+int64_t timestampcpu(void);
+```
+The `timestampcpu` will support `ns`, but it return the `μs`. 
+
+### Attention
+
+Those functions are **not reentrant**. So when you use those int multiple thread project, that will be in a mess. And the reentrant version will be add later.
 
 ## timer
 
-Timer is a set of wrap function which use POSIX per-proccess timer. now provide those API for create a callback timer( signale timer will support later)
+Timer is a set of wrap functions which use POSIX per-proccess timer. Now provide those API for create a callback timer( signaled timer will support later)
 
 ```c
 void    ctimeinit(void);
@@ -15,7 +29,7 @@ int 	deletetimer(timer_t);
 int     modifytimer(timer_t, struct timespec, u8);
 ```
 
-The structure `sturct timespec` is defined in `time.h`, and `union sigval` is defined in `signal.h`. Here is the definition of those:
+The structure `sturct timespec` is defined in `time.h`, and `union sigval` is defined in `signal.h`. Here are the definition of those types:
 
 ```c
 struct timespec{
@@ -29,7 +43,7 @@ union sigval {
 }
 ```
 
-And the `callback` a function pointer which is defined by `sigevent`.
+And the `callback` is a function pointer which defined by `sigevent`.
 
 ```c
 void (*callback)(union sigval);
