@@ -57,7 +57,7 @@ Here is an example:
 ```c 
 void show(union sigval arg)
 {
-	printf("Expired at %ds\n", arg.sival_int);
+	printf("CB: Expired at %ds\n", arg.sival_int);
 }
 
 int mian(void)
@@ -65,7 +65,7 @@ int mian(void)
 	struct timespec ts;
 	timer_t         tid;
 
-	ctimeinti();
+	ctimeinit();
 	ts.tv_sec  = 2; /* 2s expired */
 	ts.tv_nsec = 0;
 
@@ -83,11 +83,11 @@ int mian(void)
 This example will print the result:
 
 ```shell
-Expired at 2s
-Expired at 2s
-Expired at 2s
-Expired at 2s
-Expired at 2s
+CB: Expired at 2s
+CB: Expired at 2s
+CB: Expired at 2s
+CB: Expired at 2s
+CB: Expired at 2s
 ^C
 ```
 More example you can see [here](https://github.com/JesseEisen/timeutil/blob/master/timer/example.c)
