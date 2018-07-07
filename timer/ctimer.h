@@ -30,6 +30,7 @@ struct Ctimer
 extern void    ctimeinit(void);
 extern timer_t createcbtimer(struct timespec, u8, callback, union sigval);
 extern int     starttimer(timer_t);
-
-
+extern int     stoptimer(timer_t);
+extern int 	   deletetimer(timer_t);
+extern int     modifytimer(timer_t, struct timespec, u8);
 #endif

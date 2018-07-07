@@ -1,7 +1,8 @@
 #include "ctimer.h"
 
-struct list_head  timerlist;
+static struct list_head  timerlist;
 static Ctimer * gettimerinfo(timer_t tid);
+static void  settimerlength(struct itimerspec *, Ctimer *);
 
 void ctimeinit(void)
 {
@@ -14,7 +15,6 @@ createcbtimer(struct timespec ts, u8 isperiod, callback cb, union sigval arg)
 	Ctimer 			*ct;
 	timer_t   		tid;
 	struct sigevent sevp;
-
 
 	memset(&sevp, 0, sizeof(struct sigevent));
 
@@ -57,6 +57,17 @@ gettimerinfo(timer_t tid)
 	return NULL;
 }
 
+static void
+settimerlength(struct itimerspec *it, Ctimer *ct)
+{
+	it->it_value.tv_sec  = ct->ts.tv_sec;
+	it->it_value.tv_nsec = ct->ts.tv_nsec;
+	if(ct->isperiod == TRUE){
+		it->it_interval.tv_sec  = ct->ts.tv_sec;
+		it->it_interval.tv_nsec = ct->ts.tv_nsec;
+	}else
+		memset(&it->it_interval, 0, sizeof(it->it_interval));
+}
 
 int
 starttimer(timer_t tid)
@@ -66,20 +77,76 @@ starttimer(timer_t tid)
 
 	ct = gettimerinfo(tid);
 	if(ct == NULL){
-		fprintf(stderr, "timer id not create\n");
+		fprintf(stderr, "timer id not exist\n");
 		return -1;
 	}
 
-	it.it_value.tv_sec  = ct->ts.tv_sec;
-	it.it_value.tv_nsec = ct->ts.tv_nsec;
-	if(ct->isperiod == TRUE){
-		it.it_interval.tv_sec  = ct->ts.tv_sec;
-		it.it_interval.tv_nsec = ct->ts.tv_nsec;
-	}
+	settimerlength(&it, ct);
 
-	timer_settime(tid, 0, &it, NULL);
+	return timer_settime(tid, 0, &it, NULL);
 }
 
+int
+stoptimer(timer_t tid)
+{
+	Ctimer    			*ct;
+	struct itimerspec 	 it;
 
+	ct = gettimerinfo(tid);
+	if(ct == NULL){
+		fprintf(stderr, "timer id not exist\n");
+		return -1;
+	}
+	
+	it.it_value.tv_sec  = 0;
+	it.it_value.tv_nsec = 0;
+	it.it_interval.tv_sec  = 0;
+	it.it_interval.tv_nsec = 0;
 
+	return timer_settime(tid, 0, &it, NULL);
+}
 
+int 
+modifytimer(timer_t tid, struct timespec ts, u8 isperiod)
+{
+	Ctimer              *ct;
+	struct  itimerspec  it;
+
+	ct = gettimerinfo(tid);
+	if(ct == NULL){
+		fprintf(stderr, "timer id not exist\n");
+		return -1;
+	}
+
+	ct->isperiod   = isperiod;
+	ct->ts.tv_sec  = ts.tv_sec;
+	ct->ts.tv_nsec = ts.tv_nsec;
+
+	settimerlength(&it, ct);
+
+	return timer_settime(tid, 0, &it, NULL);
+}
+
+int
+deletetimer(timer_t tid)
+{
+	Ctimer      *ct;
+
+	ct = gettimerinfo(tid);
+	if(ct == NULL){
+		fprintf(stderr, "timer id not exist\n");
+		return -1;
+	}
+
+	if(tid != NULL){
+		if(timer_delete(tid) == -1){
+			fprintf(stderr, "delete timer error: %s\n", strerror(errno));
+			return -1;
+		}
+	}
+
+	list_del(&ct->node);
+	free(ct);
+
+	return 0;
+}
